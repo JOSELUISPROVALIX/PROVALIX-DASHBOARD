@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EEFF 2026 — Provalix Homes</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root{
+  --navy:#2C3E54;--navy2:#1e2d3d;--navy3:#3d5268;
+  --teal:#5BC8C0;--teal2:#3ea8a0;
+  --white:#fff;--off:#f8f9fb;--border:#e2e8f0;
+  --text:#1a2635;--muted:#64748b;--light:#94a3b8;
+  --green:#16a34a;--red:#dc2626;--orange:#d97706;
+  --green-bg:#dcfce7;--red-bg:#fee2e2;--orange-bg:#fef3c7;
+  --row-alt:#f8fafc;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;width:100%;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;font-size:13px;background:#fff;color:var(--text)}
+/* ── TOPBAR ── */
+.topbar{background:var(--navy);height:54px;padding:0 32px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.logo{height:26px}
+.topbar-title{text-align:center}
+.topbar-title h1{font-size:13px;font-weight:700;color:#fff;letter-spacing:.12em;text-transform:uppercase}
+.topbar-title p{font-size:10px;color:var(--teal);margin-top:2px;letter-spacing:.06em}
+.topbar-meta{font-size:10px;color:rgba(255,255,255,.4);text-align:right;line-height:1.7}
+/* ── NAV TABS ── */
+.nav{background:var(--navy2);border-bottom:2px solid var(--teal);height:40px;padding:0 32px;display:flex;align-items:center;gap:2px;flex-shrink:0}
+.tab{height:30px;padding:0 18px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border:none;cursor:pointer;border-radius:4px 4px 0 0;background:transparent;color:rgba(255,255,255,.4);transition:all .15s}
+.tab:hover{color:rgba(255,255,255,.75)}
+.tab.active{background:var(--teal);color:var(--navy2)}
+.tab.compare{margin-left:auto;background:rgba(91,200,192,.15);color:var(--teal);border:1px solid rgba(91,200,192,.35)}
+.tab.compare.active{background:var(--teal);color:var(--navy2)}
+/* ── CONTENT ── */
+.content{flex:1;overflow-y:auto;padding:24px 32px 28px;background:var(--off)}
+/* ── PAGE HEADER (like PDF) ── */
+.page-header{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:20px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.page-header h2{font-size:16px;font-weight:300;letter-spacing:.08em;text-transform:uppercase;color:var(--navy)}
+.page-header .logo-sm{height:30px;opacity:.7}
+/* ── KPI STRIP ── */
+.kpi-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px}
+.kpi{background:#fff;border:1px solid var(--border);border-radius:6px;padding:12px 16px;border-left:3px solid var(--border)}
+.kpi.g{border-left-color:var(--green)}.kpi.r{border-left-color:var(--red)}.kpi.t{border-left-color:var(--teal)}.kpi.n{border-left-color:var(--navy)}
+.kpi-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:4px}
+.kpi-val{font-size:20px;font-weight:700;color:var(--text);line-height:1}
+.kpi-sub{font-size:10px;margin-top:3px;font-weight:600}
+.pos{color:var(--green)}.neg{color:var(--red)}.neu{color:var(--muted)}
+/* ── SECTION TITLE ── */
+.sec{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--navy);margin:20px 0 10px;padding-bottom:6px;border-bottom:2px solid var(--teal)}
+/* ── MAIN TABLE (like PDF) ── */
+.mt{width:100%;border-collapse:collapse;font-size:12px;background:#fff;border:1px solid var(--border);border-radius:6px;overflow:hidden}
+.mt thead tr{background:var(--navy)}
+.mt thead th{color:#fff;font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:9px 12px;text-align:right;white-space:nowrap}
+.mt thead th:first-child{text-align:left}
+.mt tbody tr{border-bottom:1px solid var(--border)}
+.mt tbody tr:nth-child(even){background:var(--row-alt)}
+.mt tbody tr:hover{background:#f0f7ff}
+/* row types */
+.mt tr.cat td{background:#eef3f8;font-weight:800;font-size:11px;color:var(--navy);padding:7px 12px;border-top:1px solid #c8d6e5}
+.mt tr.sub td{background:#f5f8fb;font-weight:700;font-size:11px;color:var(--navy3);padding:6px 12px 6px 20px}
+.mt tr.det td{padding:5px 12px 5px 28px;color:var(--muted);font-size:11px}
+.mt tr.det td:not(:first-child){color:var(--text)}
+.mt tr.total td{background:var(--navy);color:#fff;font-weight:800;font-size:12px;padding:10px 12px}
+.mt td{text-align:right;padding:6px 12px;vertical-align:middle}
+.mt td:first-child{text-align:left}
+.mt td.comment{font-size:10px;color:var(--muted);font-style:italic;max-width:280px}
+.mt tr.cat td.comment,.mt tr.sub td.comment{color:var(--muted);font-weight:400}
+.desv-pos{color:var(--green);font-weight:700}
+.desv-neg{color:var(--red);font-weight:700}
+.badge{display:inline-block;padding:1px 7px;border-radius:3px;font-size:10px;font-weight:700;min-width:54px;text-align:center}
+.bg{background:var(--green-bg);color:var(--green)}.br{background:var(--red-bg);color:var(--red)}.bn{background:#f1f5f9;color:var(--muted)}
+/* ── CHART GRID ── */
+.chart-grid{display:grid;gap:14px}
+.chart-grid.g2{grid-template-columns:1fr 1fr}
+.chart-grid.g3{grid-template-columns:1fr 1fr 1fr}
+.chart-grid.g13{grid-template-columns:1fr 1.8fr}
+.chart-card{background:#fff;border:1px solid var(--border);border-radius:6px;padding:14px 16px;display:flex;flex-direction:column}
+.cc-title{font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--navy);margin-bottom:10px;padding-bottom:6px;border-bottom:1.5px solid var(--teal);display:flex;align-items:center;gap:8px}
+.cc-title span{background:var(--navy);color:#fff;font-size:8px;padding:1px 6px;border-radius:2px;letter-spacing:.04em}
+.cw{position:relative;flex:1;min-height:0}
+.legend{display:flex;gap:14px;margin-bottom:8px;flex-wrap:wrap}
+.leg{display:flex;align-items:center;gap:5px;font-size:10px;font-weight:600;color:var(--muted)}
+.ld{width:11px;height:11px;border-radius:2px;flex-shrink:0}
+/* ── COMPARE VIEW ── */
+.compare-header{background:#fff;border:1px solid var(--border);border-radius:6px;padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;gap:16px}
+.compare-header label{font-size:11px;font-weight:700;color:var(--navy);letter-spacing:.04em}
+.compare-header select{padding:5px 10px;border:1px solid var(--border);border-radius:4px;font-size:12px;color:var(--text);background:#fff;cursor:pointer}
+.compare-vs{font-size:13px;font-weight:700;color:var(--teal);padding:0 4px}
+.ct-diff{width:100%;border-collapse:collapse;font-size:12px;background:#fff;border:1px solid var(--border);border-radius:6px;overflow:hidden}
+.ct-diff thead tr{background:var(--navy)}
+.ct-diff thead th{color:#fff;font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:9px 12px;text-align:right;white-space:nowrap}
+.ct-diff thead th:first-child{text-align:left}
+.ct-diff tbody tr{border-bottom:1px solid var(--border)}
+.ct-diff tbody tr:nth-child(even){background:var(--row-alt)}
+.ct-diff tbody tr:hover{background:#f0f7ff}
+.ct-diff td{padding:7px 12px;text-align:right}
+.ct-diff td:first-child{text-align:left;font-weight:600;color:var(--navy3)}
+.ct-diff tr.hdr td{background:#eef3f8;font-weight:800;color:var(--navy);font-size:11px}
+.ct-diff tr.total-row td{background:var(--navy);color:#fff;font-weight:800;font-size:12px}
+/* ── BAL BARS ── */
+.bbar{display:flex;align-items:center;gap:10px;margin:7px 0}
+.bbar-lbl{font-size:11px;color:var(--muted);width:130px;flex-shrink:0}
+.bbar-track{flex:1;height:8px;background:var(--off);border-radius:4px;overflow:hidden;border:1px solid var(--border)}
+.bbar-fill{height:100%;border-radius:4px}
+.bbar-val{font-size:11px;font-weight:700;width:80px;text-align:right;flex-shrink:0}
+/* ── NOTES ── */
+.notes-list{background:#fff;border:1px solid var(--border);border-radius:6px;overflow:hidden}
+.note-item{padding:8px 14px 8px 18px;border-bottom:1px solid var(--border);font-size:11px;color:var(--muted);line-height:1.5;position:relative}
+.note-item:last-child{border-bottom:none}
+.note-item::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--teal)}
+/* ── FOOTER ── */
+.footer{background:var(--navy2);color:rgba(255,255,255,.3);font-size:9px;padding:6px 32px;text-align:center;letter-spacing:.04em;flex-shrink:0}
+</style>
+</head>
+<body style="display:flex;flex-direction:column;min-height:100vh">
+
+<div class="topbar">
+  <img class="logo" id="logoTop" alt="Provalix Homes">
+  <div class="topbar-title">
+    <h1>Informe de Tancament EE.FF. 2026</h1>
+    <p>Provalix Santa Anna SL · Seguiment Pressupostari · Devengo</p>
+  </div>
+  <div class="topbar-meta">Actualitzat: 28/04/2026<br>Font: SharePoint</div>
+</div>
+
+<div class="nav">
+  <button class="tab active" onclick="sw(0,this)">Gener 2026</button>
+  <button class="tab" onclick="sw(1,this)">Febrer 2026</button>
+  <button class="tab" onclick="sw(2,this)">Març 2026</button>
+  <button class="tab" onclick="sw(3,this)">YTD 1T</button>
+  <button class="tab compare" onclick="sw(4,this)">▶ Comparatiu YTD</button>
+</div>
+
+<div class="content" id="content"></div>
+<div class="footer">INFORME TANCAMENT EE.FF. 2026 · PROVALIX SANTA ANNA SL · Dades extretes de SharePoint — 9-INFORMES MENSUALES DG / 2026</div>
+
+<script>
+// ── LOGO ──
+const LOGO_SRC='data:image/png;base64,';
+document.getElementById('logoTop').src=LOGO_SRC;
+
+const BD='#2C3E54',REAL='#5BC8C0',BDA='rgba(44,62,84,0.16)',REALA='rgba(91,200,192,0.75)';
+const f=n=>new Intl.NumberFormat('es-ES',{minimumFractionDigits:0,maximumFractionDigits:0}).format(Math.round(Math.abs(n)));
+const fe=n=>(n<0?'−':'')+'€'+f(n);
+const pct=(r,b)=>b?((r-b)/Math.abs(b)*100).toFixed(1)+'%':'—';
+const sign=v=>v>0?'+':v<0?'−':'';
+const dbadge=v=>{
+  if(v>0.4)return'<span class="badge bg">+'+f(v)+'</span>';
+  if(v<-0.4)return'<span class="badge br">−'+f(Math.abs(v))+'</span>';
+  return'<span class="badge bn">0</span>';
+};
+
+// ── DATA ──
+const D=[
+  {id:0,lbl:'Gener 2026',llbl:'1. SEGUIMENT BUDGET GENER 2026',
+   bdi:165535.78,ri:125375.56, bdg:85944.05,rg:70176.58, bde:16738.24,rde:55198.98, bdf:62853.45,rdf:-615.25, bdr:79591.73,rr:55198.98,
+   ing:[
+     {t:'cat',c:'10 INGRESSOS',bd:165535.78,r:125375.56},
+     {t:'sub',c:'10.10 RENDES IMMOBLES',bd:1682.33,r:990.81},
+     {t:'det',c:'10.10.001 Rendes',bd:1682.33,r:990.81,cmt:'Sense renda Lleida 7 1º-2ª. Venut'},
+     {t:'sub',c:'10.20 PRESTACIÓ DE SERVEIS',bd:100119.44,r:124384.75},
+     {t:'det',c:'10.20.001 Gestió Ordino',bd:11000,r:11000,cmt:''},
+     {t:'det',c:'10.20.003 Vendes Ordino Sec.',bd:0,r:24000,cmt:'2 Reserves + C/V Fase 2 desembre'},
+     {t:'det',c:'10.20.005 Gestió Vallpineda',bd:9000,r:9000,cmt:''},
+     {t:'det',c:'10.20.006 Gestió Vilablareix',bd:18000,r:18000,cmt:''},
+     {t:'det',c:'10.20.007 Gestió Rincón de la Victoria',bd:25000,r:25000,cmt:''},
+     {t:'det',c:'10.20.008 Gestió Vilablareix Centre',bd:12000,r:12000,cmt:''},
+     {t:'det',c:'10.20.009 Gestió Cala Corb II',bd:15000,r:15000,cmt:''},
+     {t:'det',c:'10.20.004 Gestió Cala Corb',bd:11000,r:11000,cmt:''},
+     {t:'sub',c:'30 RESULTAT FINANCER',bd:63716.01,r:0},
+     {t:'det',c:'30.10.001 Ingrés Financer',bd:1426.85,r:1674.16,cmt:''},
+     {t:'det',c:'30.10.003 Resultat Inversions',bd:63716.01,r:0,cmt:'PVX Residencial diferit a febrer'},
+   ],
+   gto:[
+     {t:'cat',c:'01 GASTOS',bd:-85944.05,r:-70176.58},
+     {t:'sub',c:'01.10 GASTOS PERSONAL',bd:-58074.50,r:-43603.39},
+     {t:'det',c:'01.10.001 Sous i Salaris',bd:-33363.85,r:-28474.96,cmt:'PM2 no contractat → estalvi €5.000'},
+     {t:'det',c:'01.10.002 Càrregues Socials',bd:-9705.65,r:-8128.43,cmt:''},
+     {t:'det',c:'01.10.003 Comitè Assessor',bd:-5000,r:-5000,cmt:''},
+     {t:'det',c:'01.10.006 Comercial Andorra',bd:-5837.50,r:-1673.78,cmt:'Regularització nòmina desembre'},
+     {t:'sub',c:'01.20 SERVEIS EXTERIORS',bd:-17585.87,r:-16785.09},
+     {t:'det',c:'01.20.001 Serveis Professionals',bd:-11165.87,r:-10303.09,cmt:''},
+     {t:'det',c:'01.20.002 Altres Serveis',bd:-2327.62,r:-1689.33,cmt:''},
+     {t:'det',c:'01.20.003 Serveis Corporatius',bd:-2860,r:-2590,cmt:''},
+     {t:'det',c:'01.20.011 Arrendaments',bd:-3753.26,r:-3753.29,cmt:''},
+     {t:'det',c:'01.20.012 Gastos Immobles',bd:-1286.73,r:-1881.65,cmt:''},
+     {t:'sub',c:'01.30 RESULTAT FINANCER',bd:-2289.41,r:-2289.41},
+     {t:'det',c:'01.30.002 Gasto Financer',bd:-2289.41,r:-2289.41,cmt:''},
+     {t:'sub',c:'01.40 AMORTITZACIONS',bd:-4009.93,r:-4009.93},
+     {t:'det',c:'01.40.001 Amortitzacions',bd:-4009.93,r:-4009.93,cmt:''},
+   ],
+   notas:['Sense renda Lleida 7 1º-2ª — immoble venut','Vendes Ordino Sec. +€24k: 2 reserves + C/V Fase 2 desembre','Resultat Inversions PVX Residencial: diferit a febrer','PM2 no contractat → estalvi €5.000 en nòmina','Comissions Swift i descobert bancari reclamades a Sabadell'],
+   bal:{a:8861998.69,pn:6718188.11,pnc:1545,pc:2142265.58,r:63639.70}},
+
+  {id:1,lbl:'Febrer 2026',llbl:'1. SEGUIMENT BUDGET FEBRER 2026',
+   bdi:147690.58,ri:102084.61, bdg:71840.68,rg:208906.65, bde:75849.89,rde:-105301.31, bdf:828.54,rdf:-1337.95, bdr:76678.44,rr:-103614.78,
+   ing:[
+     {t:'cat',c:'10 INGRESSOS',bd:147690.58,r:102084.61},
+     {t:'sub',c:'10.10 RENDES IMMOBLES',bd:1690.58,r:1084.61},
+     {t:'det',c:'10.10.001 Rendes',bd:1690.58,r:1084.61,cmt:''},
+     {t:'sub',c:'10.20 PRESTACIÓ DE SERVEIS',bd:145962.04,r:101351.37},
+     {t:'det',c:'10.20.001 Gestió Ordino',bd:11000,r:11000,cmt:''},
+     {t:'det',c:'10.20.002 Vendes Ordino SUC',bd:45000,r:0,cmt:'Retardat a març/abril per planning obra'},
+     {t:'det',c:'10.20.004 Gestió Cala Corb',bd:11000,r:11000,cmt:''},
+     {t:'det',c:'10.20.005 Gestió Vallpineda',bd:9000,r:9000,cmt:''},
+     {t:'det',c:'10.20.006 Gestió Vilablareix',bd:18000,r:18000,cmt:''},
+     {t:'det',c:'10.20.007 Gestió Rincón de la Victoria',bd:25000,r:25000,cmt:''},
+     {t:'det',c:'10.20.008 Gestió Vilablareix Centre',bd:12000,r:12000,cmt:''},
+     {t:'det',c:'10.20.009 Gestió Cala Corb II',bd:15000,r:15000,cmt:''},
+     {t:'det',c:'30.10.001 Ingrés Financer',bd:2899.73,r:733.24,cmt:''},
+   ],
+   gto:[
+     {t:'cat',c:'01 GASTOS',bd:-71840.68,r:-208906.65},
+     {t:'sub',c:'01.10 GASTOS PERSONAL',bd:-52573.67,r:-131954.99},
+     {t:'det',c:'01.10.001 Sous i Salaris',bd:-35030.52,r:-109660.52,cmt:'Bonus 2025 pagat: +€74.630 extra'},
+     {t:'det',c:'01.10.002 Càrregues Socials',bd:-9705.65,r:-9056.75,cmt:''},
+     {t:'det',c:'01.10.003 Comitè Assessor',bd:-5000,r:-5000,cmt:''},
+     {t:'det',c:'01.10.006 Comercial Andorra',bd:-2837.50,r:-12237.72,cmt:'Variable vendes 4T 2025: +€9.400'},
+     {t:'sub',c:'01.20 SERVEIS EXTERIORS',bd:-15227.34,r:-72897.25},
+     {t:'det',c:'01.20.001 Serveis Professionals',bd:-670.87,r:-56686.94,cmt:'CMM Investment Hunter €53.520 (2025)'},
+     {t:'det',c:'01.20.002 Altres Serveis',bd:-2604.62,r:-1267.63,cmt:''},
+     {t:'det',c:'01.20.003 Serveis Corporatius',bd:-2860,r:-3130,cmt:''},
+     {t:'det',c:'01.20.011 Arrendaments',bd:-3753.29,r:-3755.64,cmt:''},
+     {t:'det',c:'01.20.012 Gastos Immobles',bd:-943.58,r:-542.06,cmt:''},
+     {t:'sub',c:'01.30 RESULTAT FINANCER',bd:-2071.19,r:-2071.19},
+     {t:'det',c:'01.30.002 Gasto Financer',bd:-2071.19,r:-2071.19,cmt:''},
+     {t:'sub',c:'01.40 AMORTITZACIONS',bd:-4039.93,r:-4009.93},
+     {t:'det',c:'01.40.001 Amortitzacions',bd:-4039.93,r:-4009.93,cmt:''},
+   ],
+   notas:['Bonus 2025 cobrat en febrer: +€74.630 extra en nòmina (no previst BD)','CMM Investment Hunter €53.520 — recuperació gasto 2025','Vendes Ordino SUC €45k retardades a març/abril per planning obra','Comercial Andorra: variable vendes 4T 2025 +€9.400','Albert Miralles (PM2) contractat 16/03/26'],
+   bal:{a:8848370.62,pn:6614573.33,pnc:1545,pc:2232252.29,r:-39975.08}},
+
+  {id:2,lbl:'Març 2026',llbl:'1. SEGUIMENT BUDGET MARÇ 2026',
+   bdi:132691.76,ri:91084.61, bdg:163107.39,rg:81578.44, bde:-30415.64,rde:9391.88, bdf:-505.85,rdf:-6947.78, bdr:-30921.48,rr:5629.03,
+   ing:[
+     {t:'cat',c:'10 INGRESSOS',bd:132691.76,r:91084.61},
+     {t:'sub',c:'10.10 RENDES IMMOBLES',bd:1691.76,r:1084.61},
+     {t:'det',c:'10.10.001 Rendes',bd:1691.76,r:1084.61,cmt:''},
+     {t:'sub',c:'10.20 PRESTACIÓ DE SERVEIS',bd:131000,r:90000},
+     {t:'det',c:'10.20.001 Gestió Ordino',bd:11000,r:11000,cmt:''},
+     {t:'det',c:'10.20.003 Vendes Ordino Sec.',bd:24000,r:0,cmt:'Augment tarifa frena vendes'},
+     {t:'det',c:'10.20.005 Gestió Vallpineda',bd:9000,r:9000,cmt:''},
+     {t:'det',c:'10.20.006 Gestió Vilablareix',bd:18000,r:18000,cmt:''},
+     {t:'det',c:'10.20.007 Gestió Rincón de la Victoria',bd:25000,r:25000,cmt:''},
+     {t:'det',c:'10.20.008 Gestió Vilablareix Centre',bd:12000,r:12000,cmt:''},
+     {t:'det',c:'10.20.009 Gestió Cala Corb II',bd:15000,r:15000,cmt:''},
+     {t:'det',c:'10.20.010 Gestió Projecte 1T',bd:17000,r:0,cmt:'Promoció no iniciada (Sotogrande P3)'},
+     {t:'sub',c:'30 RESULTAT FINANCER',bd:1783.56,r:-4658.37},
+     {t:'det',c:'30.10.001 Ingrés Financer',bd:1783.56,r:12.74,cmt:''},
+     {t:'det',c:'30.10.003 Resultat Inversions',bd:0,r:-4671.11,cmt:'Liquidació negativa PVX Residencial'},
+   ],
+   gto:[
+     {t:'cat',c:'01 GASTOS',bd:-163107.39,r:-81578.44},
+     {t:'sub',c:'01.10 GASTOS PERSONAL',bd:-140648.68,r:-49395.47},
+     {t:'det',c:'01.10.001 Sous i Salaris',bd:-122905.53,r:-32197.20,cmt:'Bonus 2025 ja pagat al feb → estalvi €90.708'},
+     {t:'det',c:'01.10.002 Càrregues Socials',bd:-9705.65,r:-8860.77,cmt:''},
+     {t:'det',c:'01.10.003 Comitè Assessor',bd:-5000,r:-5000,cmt:''},
+     {t:'det',c:'01.10.004 Formació Personal',bd:-200,r:-450,cmt:''},
+     {t:'det',c:'01.10.006 Comercial Andorra',bd:-2837.50,r:-2887.50,cmt:''},
+     {t:'sub',c:'01.20 SERVEIS EXTERIORS',bd:-18418.78,r:-28141.16},
+     {t:'det',c:'01.20.001 Serveis Professionals',bd:-3665.87,r:-11411.62,cmt:'Dexels Headhunter PM2: €6.330'},
+     {t:'det',c:'01.20.002 Altres Serveis',bd:-2004.62,r:-2470.15,cmt:''},
+     {t:'det',c:'01.20.003 Serveis Corporatius',bd:-2860,r:-2860,cmt:''},
+     {t:'det',c:'01.20.011 Arrendaments',bd:-3753.29,r:-3755.29,cmt:''},
+     {t:'det',c:'01.20.012 Gastos Immobles',bd:-1758.14,r:-1758.53,cmt:''},
+     {t:'sub',c:'01.30 RESULTAT FINANCER',bd:-2289.41,r:-2289.41},
+     {t:'det',c:'01.30.002 Gasto Financer',bd:-2289.41,r:-2289.41,cmt:''},
+     {t:'sub',c:'01.40 AMORTITZACIONS',bd:-4039.93,r:-4028.64},
+     {t:'det',c:'01.40.001 Amortitzacions',bd:-4039.93,r:-4028.64,cmt:''},
+   ],
+   notas:['Sous: estalvi €90.708 vs BD — Bonus 2025 ja pagat íntegre al febrer','Vendes Ordino Sec. €24k: augment tarifa frena vendes — pendent tancament','Gestió Projecte 1T €17k: promoció no iniciada (coberta amb Sotogrande P3)','Dexels Headhunter PM2 €6.330 — no pressupostat','Resultat Inversions −€4.671: liquidació negativa PVX Residencial'],
+   bal:{a:8874313.20,pn:6663270.05,pnc:1545,pc:2209498.15,r:5629.03}},
+
+  {id:3,lbl:'YTD 1T 2026',llbl:'2. SEGUIMENT BUDGET YTD MARÇ 2026',
+   bdi:383064.67,ri:319243.63, bdg:320892.12,rg:355423.02, bde:62511.49,rde:-34837.88, bdf:63176.14,rdf:-8900.98, bdr:125348.69,rr:-45080.37,
+   ing:[
+     {t:'cat',c:'10 INGRESSOS',bd:383064.67,r:319243.63},
+     {t:'sub',c:'10.10 RENDES IMMOBLES',bd:5064.67,r:3243.63},
+     {t:'det',c:'10.10.001 Rendes',bd:5064.67,r:3243.63,cmt:''},
+     {t:'sub',c:'10.20 PRESTACIÓ DE SERVEIS',bd:377000,r:316000},
+     {t:'det',c:'10.20.001 Gestió Ordino',bd:33000,r:33000,cmt:''},
+     {t:'det',c:'10.20.002 Vendes Ordino SUC',bd:45000,r:0,cmt:'Desplaçat a Q2'},
+     {t:'det',c:'10.20.003 Vendes Ordino Sec.',bd:24000,r:24000,cmt:''},
+     {t:'det',c:'10.20.004 Gestió Cala Corb',bd:22000,r:22000,cmt:''},
+     {t:'det',c:'10.20.005 Gestió Vallpineda',bd:27000,r:27000,cmt:''},
+     {t:'det',c:'10.20.006 Gestió Vilablareix',bd:54000,r:54000,cmt:''},
+     {t:'det',c:'10.20.007 Gestió Rincón de la Victoria',bd:75000,r:75000,cmt:''},
+     {t:'det',c:'10.20.008 Gestió Vilablareix Centre',bd:36000,r:36000,cmt:''},
+     {t:'det',c:'10.20.009 Gestió Cala Corb II',bd:45000,r:45000,cmt:''},
+     {t:'det',c:'10.20.010 Gestió Projecte 1T',bd:17000,r:0,cmt:'Promoció no iniciada'},
+     {t:'sub',c:'30 RESULTAT FINANCER',bd:63716.01,r:-4671.11},
+     {t:'det',c:'30.10.001 Ingrés Financer',bd:6110.14,r:2420.14,cmt:''},
+     {t:'det',c:'30.10.003 Resultat Inversions',bd:63716.01,r:-4671.11,cmt:'Liquidació negativa PVX Residencial'},
+   ],
+   gto:[
+     {t:'cat',c:'01 GASTOS',bd:-320892.12,r:-355423.02},
+     {t:'sub',c:'01.10 GASTOS PERSONAL',bd:-251319.90,r:-218354.95},
+     {t:'det',c:'01.10.001 Sous i Salaris',bd:-191299.90,r:-170332.68,cmt:''},
+     {t:'det',c:'01.10.002 Càrregues Socials',bd:-29116.95,r:-26045.95,cmt:''},
+     {t:'det',c:'01.10.003 Comitè Assessor',bd:-15000,r:-15000,cmt:''},
+     {t:'det',c:'01.10.004 Formació Personal',bd:-200,r:-450,cmt:''},
+     {t:'det',c:'01.10.006 Comercial Andorra',bd:-11512.50,r:-16799,cmt:'Variable vendes 4T 2025'},
+     {t:'sub',c:'01.20 SERVEIS EXTERIORS',bd:-57231.95,r:-112019.21},
+     {t:'det',c:'01.20.001 Serveis Professionals',bd:-15502.61,r:-72654.46,cmt:'CMM Investment Hunter €53.520'},
+     {t:'det',c:'01.20.002 Altres Serveis',bd:-6936.86,r:-5474.30,cmt:''},
+     {t:'det',c:'01.20.003 Serveis Corporatius',bd:-8580,r:-8580,cmt:''},
+     {t:'det',c:'01.20.004 Serveis Bancaris',bd:-225,r:-421.54,cmt:''},
+     {t:'det',c:'01.20.005 Assegurances',bd:-2000,r:-1042.86,cmt:''},
+     {t:'det',c:'01.20.006 Publicitat/Represent.',bd:-1568.16,r:-2903.45,cmt:''},
+     {t:'det',c:'01.20.011 Arrendaments',bd:-11259.84,r:-11264.22,cmt:''},
+     {t:'det',c:'01.20.012 Gastos Immobles',bd:-3988.45,r:-4182.24,cmt:''},
+     {t:'sub',c:'01.30 RESULTAT FINANCER',bd:-6650.01,r:-6650.01},
+     {t:'det',c:'01.30.002 Gasto Financer',bd:-6650.01,r:-6650.01,cmt:''},
+     {t:'sub',c:'01.40 AMORTITZACIONS',bd:-12089.79,r:-12048.50},
+     {t:'det',c:'01.40.001 Amortitzacions',bd:-12089.79,r:-12048.50,cmt:''},
+   ],
+   notas:['Ingressos gestió €316k executat vs €378k BD (−€62k per Vendes Ordino SUC i Proj 1T)','Sous €170.333 vs BD €191.300 → estalvi €21k (Bonus 2025 avançat al febrer)','Serveis Professionals €72.654 vs BD €15.503 → +€57k per CMM Investment Hunter','Resultat Inversions −€4.671 vs BD +€63.716 → liquidació negativa PVX Residencial','Resultat net YTD: −€45.080 vs BD +€125.349 = desviació −€170.429','6 de 8 promocions de gestió executades al 100% en el trimestre'],
+   bal:{a:8874313.20,pn:6663270.05,pnc:1545,pc:2209498.15,r:-34346.05}}
+];
+
+const BDR_MES=[79592,76678,-30921,37503,36896,-5556,-157412,47493,77149,86809,45269,354757];
+const BDR_ACUM=BDR_MES.map((v,i)=>BDR_MES.slice(0,i+1).reduce((a,b)=>a+b,0));
+const REALES_MES=[63639.70,-103614.78,5629.03];
+const REALES_ACUM=REALES_MES.map((v,i)=>REALES_MES.slice(0,i+1).reduce((a,b)=>a+b,0));
+const BDM=['GEN','FEB','MAR','ABR','MAI','JUN','JUL','AGO','SET','OCT','NOV','DES'];
+const PESO_COLORS=['#2C3E54','#5BC8C0','#3d5268','#7fb3c8','#a8d8d3','#1e2d3d','#4a8fa8','#6baec4','#2e7d9e','#5a9eb8','#8fc4d4','#b5d9e4','#d4edf4','#3ea8a0'];
+
+let charts={};
+function cc(){Object.values(charts).forEach(c=>c.destroy());charts={};}
+
+const doughnutPctPlugin={
+  id:'dPct',
+  afterDatasetDraw(chart){
+    const{ctx,data}=chart;
+    const total=data.datasets[0].data.reduce((a,b)=>a+b,0);
+    chart.getDatasetMeta(0).data.forEach((arc,i)=>{
+      const val=data.datasets[0].data[i];
+      const p=((val/total)*100);
+      if(p<6)return;
+      const{x,y}=arc.tooltipPosition();
+      ctx.save();ctx.font='bold 10px Segoe UI,sans-serif';ctx.fillStyle='#fff';ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText(p.toFixed(0)+'%',x,y);ctx.restore();
+    });
+  }
+};
+Chart.register(doughnutPctPlugin);
+
+function buildTable(rows,totalBd,totalR){
+  let html='<table class="mt"><thead><tr><th style="min-width:280px">Etiquetes de fila</th><th>Ppto. Actual</th><th>Executat</th><th>DESV</th><th>Comentaris</th></tr></thead><tbody>';
+  rows.forEach(row=>{
+    const bd=row.bd||0,r=row.r||0,d=r-bd;
+    const dc=d>0.4?'desv-pos':d<-0.4?'desv-neg':'';
+    if(row.t==='cat'){
+      html+=`<tr class="cat"><td>${row.c}</td><td>${fe(bd)}</td><td>${fe(r)}</td><td class="${dc}">${d>=0?'+':''}${fe(d)}</td><td class="comment"></td></tr>`;
+    } else if(row.t==='sub'){
+      html+=`<tr class="sub"><td>${row.c}</td><td>${fe(bd)}</td><td>${fe(r)}</td><td class="${dc}">${d>=0?'+':''}${fe(d)}</td><td class="comment"></td></tr>`;
+    } else {
+      html+=`<tr class="det"><td>${row.c}</td><td>${fe(bd)}</td><td>${fe(r)}</td><td>${dbadge(d)}</td><td class="comment">${row.cmt||''}</td></tr>`;
+    }
+  });
+  const td=totalR-totalBd;const tdc=td>=0?'desv-pos':'desv-neg';
+  html+=`<tr class="total"><td>Total general</td><td>${fe(totalBd)}</td><td>${fe(totalR)}</td><td class="${tdc}">${td>=0?'+':''}${fe(td)}</td><td></td></tr>`;
+  html+='</tbody></table>';
+  return html;
+}
+
+function renderCharts(d){
+  requestAnimationFrame(()=>{
+    // Bar chart ingresos
+    if(document.getElementById('cIng')){
+      const ingDet=d.ing.filter(r=>r.t==='det');
+      charts.ing=new Chart(document.getElementById('cIng'),{type:'bar',
+        data:{labels:ingDet.map(r=>r.c.replace(/^\d+\.\d+\.?\d*\s/,'')),datasets:[
+          {label:'Budget',data:ingDet.map(r=>Math.abs(r.bd||0)),backgroundColor:BDA,borderColor:BD,borderWidth:1.5},
+          {label:'Real',data:ingDet.map(r=>Math.abs(r.r||0)),backgroundColor:REALA,borderColor:REAL,borderWidth:1.5}
+        ]},
+        options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+          plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.dataset.label+': '+fe(c.raw)}}},
+          scales:{x:{ticks:{font:{size:10},callback:v=>'€'+Math.round(v/1000)+'k',color:'#64748b'},grid:{color:'rgba(0,0,0,.04)'}},
+            y:{ticks:{font:{size:10},color:BD},grid:{display:false}}}}});
+    }
+    // Bar chart gastos
+    if(document.getElementById('cGas')){
+      const gtoDet=d.gto.filter(r=>r.t==='det');
+      charts.gas=new Chart(document.getElementById('cGas'),{type:'bar',
+        data:{labels:gtoDet.map(r=>r.c.replace(/^\d+\.\d+\.?\d*\s/,'')),datasets:[
+          {label:'Budget',data:gtoDet.map(r=>Math.abs(r.bd||0)),backgroundColor:BDA,borderColor:BD,borderWidth:1.5},
+          {label:'Real',data:gtoDet.map(r=>Math.abs(r.r||0)),backgroundColor:REALA,borderColor:REAL,borderWidth:1.5}
+        ]},
+        options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+          plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.dataset.label+': '+fe(c.raw)}}},
+          scales:{x:{ticks:{font:{size:10},callback:v=>'€'+Math.round(v/1000)+'k',color:'#64748b'},grid:{color:'rgba(0,0,0,.04)'}},
+            y:{ticks:{font:{size:10},color:BD},grid:{display:false}}}}});
+    }
+    // Evolución
+    if(document.getElementById('cEvo')){
+      charts.evo=new Chart(document.getElementById('cEvo'),{type:'line',
+        data:{labels:BDM,datasets:[
+          {label:'Acum. Budget',data:BDR_ACUM,borderColor:BD,backgroundColor:'rgba(44,62,84,0.08)',fill:true,tension:0.3,borderWidth:2.5,pointRadius:5,pointBackgroundColor:BD,pointBorderColor:'#fff',pointBorderWidth:2},
+          {label:'Acum. Real',data:[...REALES_ACUM,...Array(9).fill(null)],borderColor:REAL,backgroundColor:'rgba(91,200,192,0.1)',fill:true,tension:0.3,borderWidth:3,pointRadius:8,pointBackgroundColor:REAL,pointBorderColor:'#fff',pointBorderWidth:2},
+          {label:'Mensual BD',data:BDR_MES,borderColor:BD,borderDash:[5,4],tension:0.3,borderWidth:1.5,pointRadius:3,pointBackgroundColor:BD,fill:false}
+        ]},
+        options:{responsive:true,maintainAspectRatio:false,
+          plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.dataset.label+': '+fe(c.raw)}}},
+          scales:{y:{ticks:{font:{size:10},callback:v=>'€'+Math.round(v/1000)+'k',color:'#64748b'},grid:{color:'rgba(0,0,0,.04)'},
+            title:{display:true,text:'Resultat Acumulat (€)',font:{size:10,weight:'600'},color:'#64748b'}},
+            x:{ticks:{font:{size:11,weight:'700'},color:BD},grid:{color:'rgba(0,0,0,.03)'}}}}});
+    }
+    // Peso gastos
+    if(document.getElementById('cPeso')){
+      const gtoDet=d.gto.filter(r=>r.t==='det');
+      const gVals=gtoDet.map(r=>Math.abs(r.r||0));
+      const gTot=gVals.reduce((a,b)=>a+b,0);
+      charts.peso=new Chart(document.getElementById('cPeso'),{type:'doughnut',
+        data:{labels:gtoDet.map(r=>r.c.replace(/^\d+\.\d+\.?\d*\s/,'')),
+          datasets:[{data:gVals,backgroundColor:PESO_COLORS,borderWidth:2,borderColor:'#fff',hoverOffset:8}]},
+        options:{responsive:true,maintainAspectRatio:false,cutout:'55%',
+          plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>{const p=((c.raw/gTot)*100).toFixed(1);return c.label+': '+fe(c.raw)+' ('+p+'%)';}}}}}});
+      // leyenda peso
+      const leg=document.getElementById('legPeso');
+      if(leg) leg.innerHTML=gtoDet.map((r,i)=>`<div class="leg"><div class="ld" style="background:${PESO_COLORS[i%PESO_COLORS.length]}"></div>${r.c.replace(/^\d+\.\d+\.?\d*\s/,'')} <strong>${((gVals[i]/gTot)*100).toFixed(1)}%</strong></div>`).join('');
+    }
+    // Composición activo
+    if(document.getElementById('cBal')){
+      const bVals=[5191540,1158920,772534,182570,568749];
+      const bTot=bVals.reduce((a,b)=>a+b,0);
+      charts.bal=new Chart(document.getElementById('cBal'),{type:'doughnut',
+        data:{labels:['Inv. EEGG LP','Actiu corrent','Inv. Immobles','Immobilitzat','Altres'],
+          datasets:[{data:bVals,backgroundColor:[BD,REAL,'#3d5268','#7fb3c8','#b5d9e4'],borderWidth:2,borderColor:'#fff',hoverOffset:6}]},
+        options:{responsive:true,maintainAspectRatio:false,cutout:'55%',
+          plugins:{legend:{position:'bottom',labels:{font:{size:10},color:'#64748b',boxWidth:10,padding:8,
+            generateLabels:chart=>chart.data.labels.map((l,i)=>({text:l+' '+(chart.data.datasets[0].data[i]/bTot*100).toFixed(1)+'%',fillStyle:chart.data.datasets[0].backgroundColor[i],strokeStyle:'#fff',lineWidth:1,index:i}))
+          }},tooltip:{callbacks:{label:c=>c.label+': '+fe(c.raw)+' ('+(c.raw/bTot*100).toFixed(1)+'%)'}}}}}});
+    }
+  });
+}
+
+function renderCompare(){
+  const ctn=document.getElementById('content');
+  ctn.innerHTML=`
+    <div class="page-header"><h2>Comparatiu YTD — Variació entre Períodes</h2><img class="logo-sm" id="logoHeader" alt="Provalix"></div>
+    <div class="compare-header">
+      <label>Comparar</label>
+      <select id="selA" onchange="updateCompare()">
+        <option value="0">YTD Gener 2026</option>
+        <option value="1">YTD Febrer 2026</option>
+        <option value="2" selected>YTD Març 2026</option>
+      </select>
+      <span class="compare-vs">VS</span>
+      <select id="selB" onchange="updateCompare()">
+        <option value="0" selected>YTD Gener 2026</option>
+        <option value="1">YTD Febrer 2026</option>
+        <option value="2">YTD Març 2026</option>
+      </select>
+      <span style="font-size:11px;color:var(--muted);margin-left:8px">Selecciona dos períodes per veure la variació</span>
+    </div>
+    <div id="compareTable"></div>
+    <div style="margin-top:14px" id="compareCharts"></div>
+  `;
+  document.getElementById('logoHeader').src=LOGO_SRC;
+  updateCompare();
+}
+
+// Compute cumulative YTD from month data
+function ytdOf(monthIdx){
+  // Sum months 0..monthIdx
+  const months=D.slice(0,monthIdx+1);
+  return{
+    lbl:`YTD ${D[monthIdx].lbl}`,
+    bdi:months.reduce((s,m)=>s+m.bdi,0),
+    ri:months.reduce((s,m)=>s+m.ri,0),
+    bdg:months.reduce((s,m)=>s+m.bdg,0),
+    rg:months.reduce((s,m)=>s+m.rg,0),
+    bdr:months.reduce((s,m)=>s+m.bdr,0),
+    rr:months.reduce((s,m)=>s+m.rr,0),
+    // collect all detail rows aggregated
+    ing:aggregateLines(months,'ing'),
+    gto:aggregateLines(months,'gto'),
+  };
+}
+
+function aggregateLines(months,key){
+  const map={};const order=[];
+  months.forEach(m=>m[key].forEach(r=>{
+    if(!map[r.c]){map[r.c]={...r,bd:0,r:0};order.push(r.c);}
+    map[r.c].bd+=(r.bd||0);
+    map[r.c].r+=(r.r||0);
+  }));
+  return order.map(c=>map[c]);
+}
+
+function updateCompare(){
+  const iA=parseInt(document.getElementById('selA').value);
+  const iB=parseInt(document.getElementById('selB').value);
+  if(iA===iB){document.getElementById('compareTable').innerHTML='<div style="padding:16px;color:var(--muted);font-size:12px">Selecciona dos períodes diferents.</div>';return;}
+  const ytdA=ytdOf(iA),ytdB=ytdOf(iB);
+  // A is "later", B is "earlier" conceptually — swap if needed for display
+  const [later,earlier]=iA>iB?[ytdA,ytdB]:[ytdB,ytdA];
+
+  const diffI=later.ri-earlier.ri;
+  const diffG=later.rg-earlier.rg;
+  const diffR=later.rr-earlier.rr;
+  const diffBdI=later.bdi-earlier.bdi;
+  const diffBdG=later.bdg-earlier.bdg;
+  const diffBdR=later.bdr-earlier.bdr;
+
+  // Build comparison table for key lines
+  const ingLaterDet=later.ing.filter(r=>r.t==='det');
+  const ingEarlierDet=earlier.ing.filter(r=>r.t==='det');
+  const gtoLaterDet=later.gto.filter(r=>r.t==='det');
+  const gtoEarlierDet=earlier.gto.filter(r=>r.t==='det');
+
+  function compRows(laterRows,earlierRows){
+    const allConcepts=[...new Set([...laterRows.map(r=>r.c),...earlierRows.map(r=>r.c)])];
+    return allConcepts.map(c=>{
+      const l=laterRows.find(r=>r.c===c)||{bd:0,r:0};
+      const e=earlierRows.find(r=>r.c===c)||{bd:0,r:0};
+      const dReal=l.r-e.r, dBd=l.bd-e.bd;
+      return{c:c.replace(/^\d+\.\d+\.?\d*\s/,''),eBd:e.bd,eR:e.r,lBd:l.bd,lR:l.r,dBd,dReal};
+    });
+  }
+  const ingRows=compRows(ingLaterDet,ingEarlierDet);
+  const gtoRows=compRows(gtoLaterDet,gtoEarlierDet);
+
+  function tableRows(rows,isGto){
+    return rows.map(r=>{
+      const dc=isGto?(r.dReal<-0.4?'desv-neg':r.dReal>0.4?'desv-pos':''):(r.dReal>0.4?'desv-pos':r.dReal<-0.4?'desv-neg':'');
+      return`<tr><td>${r.c}</td><td>${fe(r.eBd)}</td><td>${fe(r.eR)}</td><td>${fe(r.lBd)}</td><td>${fe(r.lR)}</td><td class="${dc}">${r.dReal>=0?'+':''}${fe(r.dReal)}</td><td class="${dc}">${r.dBd>=0?'+':''}${fe(r.dBd)}</td></tr>`;
+    }).join('');
+  }
+
+  document.getElementById('compareTable').innerHTML=`
+    <div class="sec">Resum executiu — Variació real</div>
+    <table class="ct-diff">
+      <thead><tr>
+        <th style="text-align:left;min-width:180px">Concepte</th>
+        <th>${earlier.lbl} BD</th><th>${earlier.lbl} Real</th>
+        <th>${later.lbl} BD</th><th>${later.lbl} Real</th>
+        <th>Δ Real</th><th>Δ Budget</th>
+      </tr></thead>
+      <tbody>
+        <tr class="hdr"><td>INGRESSOS TOTALS</td><td>${fe(earlier.bdi)}</td><td>${fe(earlier.ri)}</td><td>${fe(later.bdi)}</td><td>${fe(later.ri)}</td>
+          <td class="${diffI>=0?'desv-pos':'desv-neg'}">${diffI>=0?'+':''}${fe(diffI)}</td>
+          <td class="${diffBdI>=0?'desv-pos':'desv-neg'}">${diffBdI>=0?'+':''}${fe(diffBdI)}</td></tr>
+        ${tableRows(ingRows,false)}
+        <tr class="hdr"><td>GASTOS TOTALS</td><td>${fe(earlier.bdg)}</td><td>${fe(earlier.rg)}</td><td>${fe(later.bdg)}</td><td>${fe(later.rg)}</td>
+          <td class="${diffG<=0?'desv-pos':'desv-neg'}">${diffG>=0?'+':''}${fe(diffG)}</td>
+          <td class="${diffBdG<=0?'desv-pos':'desv-neg'}">${diffBdG>=0?'+':''}${fe(diffBdG)}</td></tr>
+        ${tableRows(gtoRows,true)}
+        <tr class="total-row"><td>RESULTAT GESTIÓ</td><td>${fe(earlier.bdr)}</td><td style="color:${earlier.rr>=0?'#5BC8C0':'#ff6b6b'}">${fe(earlier.rr)}</td>
+          <td>${fe(later.bdr)}</td><td style="color:${later.rr>=0?'#5BC8C0':'#ff6b6b'}">${fe(later.rr)}</td>
+          <td style="color:${diffR>=0?'#5BC8C0':'#ff6b6b'}">${diffR>=0?'+':''}${fe(diffR)}</td>
+          <td style="color:${diffBdR>=0?'#5BC8C0':'#ff6b6b'}">${diffBdR>=0?'+':''}${fe(diffBdR)}</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:16px" class="chart-grid g2" id="compareChartArea">
+      <div class="chart-card"><div class="cc-title">Ingressos <span>COMPARATIU YTD</span></div>
+        <div class="legend"><div class="leg"><div class="ld" style="background:${BD}"></div>${earlier.lbl}</div><div class="leg"><div class="ld" style="background:${REAL}"></div>${later.lbl}</div></div>
+        <div class="cw" style="height:260px"><canvas id="cCompI" role="img" aria-label="Comparatiu ingressos">Comparatiu ingressos YTD.</canvas></div>
+      </div>
+      <div class="chart-card"><div class="cc-title">Gastos <span>COMPARATIU YTD</span></div>
+        <div class="legend"><div class="leg"><div class="ld" style="background:${BD}"></div>${earlier.lbl}</div><div class="leg"><div class="ld" style="background:${REAL}"></div>${later.lbl}</div></div>
+        <div class="cw" style="height:260px"><canvas id="cCompG" role="img" aria-label="Comparatiu gastos">Comparatiu gastos YTD.</canvas></div>
+      </div>
+    </div>
+  `;
+  requestAnimationFrame(()=>{
+    if(charts.cI){charts.cI.destroy();delete charts.cI;}
+    if(charts.cG){charts.cG.destroy();delete charts.cG;}
+    const ingELabels=ingRows.map(r=>r.c);
+    charts.cI=new Chart(document.getElementById('cCompI'),{type:'bar',
+      data:{labels:ingELabels,datasets:[
+        {label:earlier.lbl,data:ingRows.map(r=>Math.abs(r.eR)),backgroundColor:BDA,borderColor:BD,borderWidth:1.5},
+        {label:later.lbl,data:ingRows.map(r=>Math.abs(r.lR)),backgroundColor:REALA,borderColor:REAL,borderWidth:1.5}
+      ]},
+      options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+        plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.dataset.label+': '+fe(c.raw)}}},
+        scales:{x:{ticks:{font:{size:10},callback:v=>'€'+Math.round(v/1000)+'k'},grid:{color:'rgba(0,0,0,.04)'}},y:{ticks:{font:{size:10},color:BD},grid:{display:false}}}}});
+    charts.cG=new Chart(document.getElementById('cCompG'),{type:'bar',
+      data:{labels:gtoRows.map(r=>r.c),datasets:[
+        {label:earlier.lbl,data:gtoRows.map(r=>Math.abs(r.eR)),backgroundColor:BDA,borderColor:BD,borderWidth:1.5},
+        {label:later.lbl,data:gtoRows.map(r=>Math.abs(r.lR)),backgroundColor:REALA,borderColor:REAL,borderWidth:1.5}
+      ]},
+      options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+        plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.dataset.label+': '+fe(c.raw)}}},
+        scales:{x:{ticks:{font:{size:10},callback:v=>'€'+Math.round(v/1000)+'k'},grid:{color:'rgba(0,0,0,.04)'}},y:{ticks:{font:{size:10},color:BD},grid:{display:false}}}}});
+  });
+}
+
+function sw(idx,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  cc();
+  if(idx===4){renderCompare();return;}
+  render(D[idx]);
+}
+
+function render(d){
+  const ingH=Math.max(300,d.ing.filter(r=>r.t==='det').length*36+60);
+  const gtoH=Math.max(320,d.gto.filter(r=>r.t==='det').length*36+60);
+  const ctn=document.getElementById('content');
+  ctn.innerHTML=`
+    <div class="page-header">
+      <h2>${d.llbl}</h2>
+      <img class="logo-sm" id="logoHeader" alt="Provalix">
+    </div>
+
+    <!-- KPI STRIP -->
+    <div class="kpi-strip">
+      <div class="kpi ${d.di>=0?'g':'r'}">
+        <div class="kpi-lbl">Ingressos executats</div>
+        <div class="kpi-val">${fe(d.ri)}</div>
+        <div class="kpi-sub ${d.di>=0?'pos':'neg'}">${d.di>=0?'+':''}${fe(d.di)} vs Ppto · ${(d.ri/d.bdi*100).toFixed(0)}% ejec.</div>
+      </div>
+      <div class="kpi ${d.dg>=0?'g':'r'}">
+        <div class="kpi-lbl">Gastos executats</div>
+        <div class="kpi-val">${fe(d.rg)}</div>
+        <div class="kpi-sub ${d.dg>=0?'pos':'neg'}">${d.dg>=0?'+':''}${fe(d.dg)} vs Ppto</div>
+      </div>
+      <div class="kpi ${d.rr>=0?'g':'r'}">
+        <div class="kpi-lbl">Resultat gestió</div>
+        <div class="kpi-val ${d.rr>=0?'pos':'neg'}">${fe(d.rr)}</div>
+        <div class="kpi-sub neu">Ppto: ${fe(d.bdr)}</div>
+      </div>
+      <div class="kpi t">
+        <div class="kpi-lbl">Resultat explotació</div>
+        <div class="kpi-val ${d.rde>=0?'pos':'neg'}">${fe(d.rde)}</div>
+        <div class="kpi-sub neu">Ppto: ${fe(d.bde)}</div>
+      </div>
+      <div class="kpi n">
+        <div class="kpi-lbl">% Execució ingressos</div>
+        <div class="kpi-val">${(d.ri/d.bdi*100).toFixed(0)}%</div>
+        <div class="kpi-sub neu">Base: ${fe(d.bdi)}</div>
+      </div>
+    </div>
+
+    <!-- TABLA PRINCIPAL INGRESOS (como PDF) -->
+    <div class="sec">Seguiment Ingressos</div>
+    ${buildTable(d.ing, d.bdi, d.ri)}
+
+    <!-- GRAFICO INGRESOS -->
+    <div style="margin-top:14px" class="chart-grid g2">
+      <div class="chart-card">
+        <div class="cc-title">Ingressos per partida <span>PPTO vs REAL</span></div>
+        <div class="legend">
+          <div class="leg"><div class="ld" style="background:${BD}"></div>Pressupost</div>
+          <div class="leg"><div class="ld" style="background:${REAL}"></div>Executat</div>
+        </div>
+        <div class="cw" style="height:${ingH}px"><canvas id="cIng" role="img" aria-label="Ingressos vs budget">Ingressos real vs BD.</canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="cc-title">Evolució Resultat Gestió 2026 <span>ACUMULAT BD vs REAL</span></div>
+        <div class="legend">
+          <div class="leg"><div class="ld" style="background:${BD}"></div>Acum. Pressupost</div>
+          <div class="leg"><div class="ld" style="background:${REAL}"></div>Acum. Real</div>
+          <div class="leg"><div class="ld" style="background:${BD};opacity:.35"></div>Mensual BD</div>
+        </div>
+        <div class="cw" style="height:${ingH}px"><canvas id="cEvo" role="img" aria-label="Evolució resultat">Evolució acumulat 2026.</canvas></div>
+      </div>
+    </div>
+
+    <!-- TABLA PRINCIPAL GASTOS -->
+    <div class="sec" style="margin-top:20px">Seguiment Gastos</div>
+    ${buildTable(d.gto, d.bdg, d.rg)}
+
+    <!-- GRAFICO GASTOS + PESO -->
+    <div style="margin-top:14px" class="chart-grid g2">
+      <div class="chart-card">
+        <div class="cc-title">Gastos per partida <span>PPTO vs REAL</span></div>
+        <div class="legend">
+          <div class="leg"><div class="ld" style="background:${BD}"></div>Pressupost</div>
+          <div class="leg"><div class="ld" style="background:${REAL}"></div>Executat</div>
+        </div>
+        <div class="cw" style="height:${gtoH}px"><canvas id="cGas" role="img" aria-label="Gastos vs budget">Gastos real vs BD.</canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="cc-title">Pes de cada gasto s/total real <span>% S/TOTAL</span></div>
+        <div id="legPeso" class="legend" style="flex-wrap:wrap;gap:5px 12px;margin-bottom:10px"></div>
+        <div class="cw" style="height:${gtoH}px"><canvas id="cPeso" role="img" aria-label="Pes gastos">Distribució percentual gastos.</canvas></div>
+      </div>
+    </div>
+
+    <!-- P&G + NOTES -->
+    <div class="sec" style="margin-top:20px">Compte de Resultats</div>
+    <div class="chart-grid g2" style="margin-bottom:14px">
+      <div class="chart-card">
+        <div class="cc-title">P&G — Resum executiu</div>
+        <table class="mt">
+          <thead><tr><th>Línia</th><th>Pressupost</th><th>Executat</th><th>DESV</th><th>%</th></tr></thead>
+          <tbody>
+            <tr class="cat"><td>A — INGRESSOS EXPLOTACIÓ</td><td>${fe(d.bdi)}</td><td>${fe(d.ri)}</td><td class="${d.di>=0?'desv-pos':'desv-neg'}">${d.di>=0?'+':''}${fe(d.di)}</td><td class="${d.di>=0?'desv-pos':'desv-neg'}">${pct(d.ri,d.bdi)}</td></tr>
+            <tr class="cat"><td>B — GASTOS EXPLOTACIÓ</td><td>(${fe(d.bdg)})</td><td>(${fe(d.rg)})</td><td class="${d.dg>=0?'desv-pos':'desv-neg'}">${d.dg>=0?'+':''}${fe(d.dg)}</td><td class="${d.dg>=0?'desv-pos':'desv-neg'}">${pct(d.rg,d.bdg)}</td></tr>
+            <tr class="sub"><td>C — RESULTAT EXPLOTACIÓ (A−B)</td><td style="color:${d.bde>=0?'var(--green)':'var(--red)'};font-weight:700">${fe(d.bde)}</td><td style="color:${d.rde>=0?'var(--green)':'var(--red)'};font-weight:700">${fe(d.rde)}</td><td class="${d.rde>=d.bde?'desv-pos':'desv-neg'}">${fe(d.rde-d.bde)}</td><td>—</td></tr>
+            <tr class="cat"><td>D — RESULTAT FINANCER</td><td>${fe(d.bdf)}</td><td>${fe(d.rdf)}</td><td class="${d.rdf>=d.bdf?'desv-pos':'desv-neg'}">${fe(d.rdf-d.bdf)}</td><td>—</td></tr>
+            <tr class="total"><td>E — RESULTAT GESTIÓ (C+D)</td><td>${fe(d.bdr)}</td><td style="color:${d.rr>=0?'#5BC8C0':'#ff6b6b'}">${fe(d.rr)}</td><td style="color:${d.rr>=d.bdr?'#5BC8C0':'#ff6b6b'}">${fe(d.rr-d.bdr)}</td><td style="color:${d.rr>=d.bdr?'#5BC8C0':'#ff6b6b'}">${pct(d.rr,d.bdr)}</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="chart-card">
+        <div class="cc-title">Notes del període</div>
+        <div class="notes-list">${d.notas.map(n=>`<div class="note-item">${n}</div>`).join('')}</div>
+      </div>
+    </div>
+
+    <!-- BALANÇ -->
+    <div class="sec">3. Anàlisi Balanç de Tancament</div>
+    <div class="chart-grid g3">
+      <div class="chart-card">
+        <div class="cc-title">Estructura financera</div>
+        <div style="font-size:22px;font-weight:800;color:var(--navy);margin-bottom:12px">${fe(d.bal.a)}</div>
+        <div class="bbar"><div class="bbar-lbl">Patrimoni net</div><div class="bbar-track"><div class="bbar-fill" style="width:${(d.bal.pn/d.bal.a*100).toFixed(0)}%;background:var(--navy)"></div></div><div class="bbar-val">${fe(d.bal.pn)}</div></div>
+        <div class="bbar"><div class="bbar-lbl">Passiu no corrent</div><div class="bbar-track"><div class="bbar-fill" style="width:.5%;background:var(--teal)"></div></div><div class="bbar-val">${fe(d.bal.pnc)}</div></div>
+        <div class="bbar"><div class="bbar-lbl">Passiu corrent</div><div class="bbar-track"><div class="bbar-fill" style="width:${(d.bal.pc/d.bal.a*100).toFixed(0)}%;background:var(--red)"></div></div><div class="bbar-val">${fe(d.bal.pc)}</div></div>
+        <div style="margin-top:10px;font-size:11px;color:var(--muted)">Solvència: <strong style="color:var(--navy)">${(d.bal.pn/d.bal.a*100).toFixed(1)}%</strong> · Resultat: <strong style="color:${d.bal.r>=0?'var(--green)':'var(--red)'}">${fe(d.bal.r)}</strong></div>
+        <div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--border)">
+          <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:7px">Variació vs Desembre 2025</div>
+          <div class="bbar"><div class="bbar-lbl">Actiu des-25</div><div class="bbar-track"><div class="bbar-fill" style="width:100%;background:var(--muted)"></div></div><div class="bbar-val" style="font-size:10px">€8.845k</div></div>
+          <div class="bbar"><div class="bbar-lbl">Actiu actual</div><div class="bbar-track"><div class="bbar-fill" style="width:${(d.bal.a/8845159.29*100).toFixed(0)}%;background:var(--navy)"></div></div><div class="bbar-val" style="font-size:10px">${fe(d.bal.a)}</div></div>
+          <div style="margin-top:6px;font-size:11px;color:var(--muted)">Var. actiu: <strong style="color:${d.bal.a>=8845159.29?'var(--green)':'var(--red)'}">${fe(d.bal.a-8845159.29)}</strong> · Var. patrimoni: <strong style="color:${d.bal.pn>=6708068.41?'var(--green)':'var(--red)'}">${fe(d.bal.pn-6708068.41)}</strong></div>
+        </div>
+      </div>
+      <div class="chart-card" style="grid-column:span 2">
+        <div class="cc-title">Composició actiu <span>% S/TOTAL</span></div>
+        <div class="cw" style="height:220px"><canvas id="cBal" role="img" aria-label="Composició actiu">Actiu ${f(d.bal.a)} EUR.</canvas></div>
+      </div>
+    </div>
+  `;
+  document.getElementById('logoHeader').src=LOGO_SRC;
+  renderCharts(d);
+}
+
+render(D[0]);
+</script>
+</body>
+</html>
