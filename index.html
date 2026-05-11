@@ -320,7 +320,7 @@ var PESO_COLORS=['#2C3E54','#5BC8C0','#3d5268','#7fb3c8','#a8d8d3','#1e2d3d','#4
 
 var charts={};
 function cc(){var k=Object.keys(charts);for(var i=0;i<k.length;i++){charts[k[i]].destroy();}charts={};}
-function sw(idx,btn){var tabs=document.querySelectorAll('.tab');for(var i=0;i<tabs.length;i++){tabs[i].classList.remove('active');}btn.classList.add('active');cc();if(idx===4){renderCmp();}else{render(D[idx]);}}
+function sw(idx,btn){var tabs=document.querySelectorAll('.tab');for(var i=0;i<tabs.length;i++){tabs[i].classList.remove('active');}btn.classList.add('active');cc();if(idx===5){renderCmp();}else{render(D[idx]);}}
 
 var doughnutPctPlugin={
   id:'dPct',
@@ -534,3 +534,4 @@ render(D[0]);
 </script>
 </body>
 </html>
+
