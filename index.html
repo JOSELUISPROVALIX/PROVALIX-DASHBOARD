@@ -83,14 +83,15 @@ html,body{height:100%;width:100%;font-family:'Segoe UI',system-ui,sans-serif;fon
 <body style="display:flex;flex-direction:column;min-height:100vh">
 <div class="topbar">
 <div><h1>Informe de Tancament EE.FF. 2026</h1><p>Provalix Santa Anna SL &middot; Seguiment Pressupostari &middot; Devengo</p></div>
-<div class="topbar-meta">Actualitzat: 28/04/2026<br>Font: SharePoint</div>
+<div class="topbar-meta">Actualitzat: 12/05/2026<br>Font: Excel SharePoint (Devengo)</div>
 </div>
 <div class="nav">
 <button class="tab active" onclick="sw(0,this)">Gener 2026</button>
 <button class="tab" onclick="sw(1,this)">Febrer 2026</button>
 <button class="tab" onclick="sw(2,this)">Marc 2026</button>
-<button class="tab" onclick="sw(3,this)">YTD 1T</button>
-<button class="tab cmp" onclick="sw(4,this)">&#9658; Comparatiu YTD</button>
+<button class="tab" onclick="sw(3,this)">Abril 2026</button>
+<button class="tab" onclick="sw(4,this)">YTD Abr</button>
+<button class="tab cmp" onclick="sw(5,this)">&#9658; Comparatiu YTD</button>
 </div>
 <div class="content" id="CT"></div>
 <div class="footer">EEFF 2026 &middot; Provalix Santa Anna SL &middot; Dades SharePoint &mdash; 9-INFORMES MENSUALES DG / 2026</div>
@@ -220,8 +221,52 @@ var D=[
  ],
  notas:['Sous: estalvi 90.708 vs BD - Bonus 2025 ja pagat integre al febrer','Vendes Ordino Sec. 24k: augment tarifa frena vendes','Gestio Projecte 1T 17k: promocio no iniciada (Sotogrande P3)','Dexels Headhunter PM2 6.330 - no pressupostat','Resultat Inversions -4.671: liquidacio negativa PVX Residencial'],
  bal:{a:8874313.20,pn:6663270.05,pnc:1545,pc:2209498.15,r:5629.03}},
-{id:3,lbl:'YTD 1T 2026',llbl:'2. SEGUIMENT BUDGET YTD MARC 2026',
- bdi:383064.67,ri:319243.63,bdg:320892.12,rg:355423.02,bde:62511.49,rde:-34837.88,bdf:63176.14,rdf:-8900.98,bdr:125348.69,rr:-45080.37,
+{id:3,lbl:'Abril 2026',llbl:'1. SEGUIMENT BUDGET ABRIL 2026',
+ bdi:108691.76,ri:91001.01,bdg:72424.00,rg:70951.35,bde:-43349.64,rde:52889.34,bdf:1235.38,rdf:28543.55,bdr:37503.14,rr:50679.98,
+ ing:[
+  {t:'cat',c:'10 INGRESSOS',bd:108691.76,r:91001.01},
+  {t:'sub',c:'10.10 RENDES IMMOBLES',bd:1691.76,r:1001.01},
+  {t:'det',c:'10.10.001 Rendes',bd:1691.76,r:1001.01,cmt:'Sense renda Lleida 7. Venut'},
+  {t:'sub',c:'10.20 PRESTACIO DE SERVEIS',bd:107000,r:90000},
+  {t:'det',c:'10.20.001 Gestio Ordino',bd:11000,r:11000,cmt:''},
+  {t:'det',c:'10.20.005 Gestio Vallpineda',bd:9000,r:9000,cmt:''},
+  {t:'det',c:'10.20.006 Gestio Vilablareix',bd:18000,r:18000,cmt:''},
+  {t:'det',c:'10.20.007 Gestio Ricon de la Victoria',bd:25000,r:25000,cmt:''},
+  {t:'det',c:'10.20.008 Gestio Vilablareix Centre',bd:12000,r:12000,cmt:''},
+  {t:'det',c:'10.20.009 Gestio Cala Corb II',bd:15000,r:15000,cmt:''},
+  {t:'det',c:'10.20.010 Gestio Projecte 1T',bd:17000,r:0,cmt:'No iniciado. Sotogrande P3'},
+  {t:'sub',c:'30 RESULTAT FINANCER',bd:1235.38,r:28543.55},
+  {t:'det',c:'30.10.001 Ingres Financer',bd:3452.05,r:990.54,cmt:''},
+  {t:'det',c:'30.10.002 Gasto Financer',bd:-2216.67,r:-2216.67,cmt:''},
+  {t:'det',c:'30.10.003 Resultat Inversions',bd:0,r:29769.68,cmt:'Venda Lleida 7 1-2 + PVX Residencial'}
+ ],
+ gto:[
+  {t:'cat',c:'01 GASTOS',bd:-72424.00,r:-70951.35},
+  {t:'sub',c:'01.10 GASTOS PERSONAL',bd:-54773.67,r:-51808.69},
+  {t:'det',c:'01.10.001 Sous i Salaris',bd:-35030.52,r:-34363.85,cmt:'PM2 mes complet'},
+  {t:'det',c:'01.10.002 Carregues Socials',bd:-9705.65,r:-9557.34,cmt:''},
+  {t:'det',c:'01.10.003 Comite Assessor',bd:-5000,r:-5000,cmt:''},
+  {t:'det',c:'01.10.004 Formacio Personal',bd:-200,r:0,cmt:''},
+  {t:'det',c:'01.10.006 Comercial Andorra',bd:-4837.50,r:-2887.50,cmt:'Pte variable 1T 2026'},
+  {t:'sub',c:'01.20 SERVEIS EXTERIORS',bd:-13610.40,r:-15334.54},
+  {t:'det',c:'01.20.001 Serveis Professionals',bd:-970.87,r:-2723.67,cmt:'FAD Legal 2.250 + Claude IA 141 + Open AI 161'},
+  {t:'det',c:'01.20.002 Altres Serveis',bd:-1504.62,r:-1969.09,cmt:'OkTicket cuota anual 660'},
+  {t:'det',c:'01.20.003 Serveis Corporatius',bd:-2860,r:-2590,cmt:'Jardineria pendent'},
+  {t:'det',c:'01.20.004 Serveis Bancaris',bd:-75,r:-132.46,cmt:'Swift Sotogrande P3 94.30'},
+  {t:'det',c:'01.20.007 Telefonos',bd:-171.36,r:-128.27,cmt:''},
+  {t:'det',c:'01.20.008 Subministres Oficina',bd:-404.57,r:-336.12,cmt:''},
+  {t:'det',c:'01.20.009 Dietes/Viatge',bd:-2500,r:-2957.13,cmt:'Sotogrande P3, Cala Corb, Ordino'},
+  {t:'det',c:'01.20.010 Mat.Oficina/Missatgeria',bd:-374.29,r:-752.18,cmt:'Fayos Office 355.02'},
+  {t:'det',c:'01.20.011 Arrendaments',bd:-3753.29,r:-3755.29,cmt:''},
+  {t:'det',c:'01.20.012 Gastos Immobles',bd:-473.68,r:9.67,cmt:'Extorn IBI 406 + Dev Fianca SQM 45'},
+  {t:'sub',c:'01.40 AMORTITZACIONS',bd:-4039.93,r:-3808.12},
+  {t:'det',c:'01.40.001 Amortitzacions',bd:-4039.93,r:-3808.12,cmt:'Baja Lleida 7 amort acum'}
+ ],
+ notas:['Resultat Inversions +29.770: Venda Lleida 7 1-2 (41.081 brut) + ajust PVX Residencial','Gestio Projecte 1T 17k: no iniciada. Coberta per Sotogrande P3 (previst Q2)','Comercial Andorra: pendent calcul variable 1T 2026 - estalvi 1.950 vs BD','FAD Legal Boutique 2.250 (Compliance 2n pagament) - no pressupostat','Resultat real Excel: 50.680 (incl. refacturacions +2.087 vs PPTX)'],
+ bal:{a:8813737.46,pn:6713950.04,pnc:1500,pc:2098287.42,r:16333.94}}
+,
+{id:4,lbl:'YTD Abril 2026',llbl:'2. SEGUIMENT BUDGET YTD ABRIL 2026',
+ bdi:491756.43,ri:410244.64,bdg:393316.12,rg:426374.37,bde:98403.13,rde:18049.93,bdf:64411.52,rdf:-1715.99,bdr:162851.83,rr:16333.94,
  ing:[
   {t:'cat',c:'10 INGRESSOS',bd:383064.67,r:319243.63},
   {t:'sub',c:'10.10 RENDES IMMOBLES',bd:5064.67,r:3243.63},
@@ -262,15 +307,15 @@ var D=[
   {t:'sub',c:'01.40 AMORTITZACIONS',bd:-12089.79,r:-12048.50},
   {t:'det',c:'01.40.001 Amortitzacions',bd:-12089.79,r:-12048.50,cmt:''}
  ],
- notas:['Ingressos gestio 316k executat vs 378k BD (-62k per Vendes Ordino SUC i Proj 1T)','Sous 170.333 vs BD 191.300 - estalvi 21k (Bonus 2025 avancat al febrer)','Serveis Professionals 72.654 vs BD 15.503 - +57k per CMM Investment Hunter','Resultat Inversions -4.671 vs BD +63.716 - liquidacio negativa PVX Residencial','Resultat net YTD: -45.080 vs BD +125.349 = desviacio -170.429','6 de 8 promocions de gestio executades al 100% en el trimestre'],
- bal:{a:8874313.20,pn:6663270.05,pnc:1545,pc:2209498.15,r:-34346.05}}
+ notas:['Resultat net YTD Excel: +16.334 vs BD +162.852 = desviacio -146.518','Ingressos gestio 406k executat vs 485k BD (-79k: Vendes Ordino SUC i Proj 1T)','Sous 204.697 vs BD 226.330 - estalvi 21.634 (Bonus 2025 avancat al febrer)','Serveis Professionals 75.378 vs BD 16.473 - +58.905 per CMM Investment Hunter','Resultat Inversions +25.099 vs BD +63.716: venda Lleida 7 compensa liquidacio PVX Res.'],
+ bal:{a:8813737.46,pn:6713950.04,pnc:1500,pc:2098287.42,r:16333.94}}
 ];
 
 var BDM=['GEN','FEB','MAR','ABR','MAI','JUN','JUL','AGO','SET','OCT','NOV','DES'];
 var BDR_MES=[79592,76678,-30921,37503,36896,-5556,-157412,47493,77149,86809,45269,354757];
 var BDR_ACUM=[79592,156270,125349,162852,199748,194192,36780,84273,161422,248231,293500,648257];
-var REALES_MES=[63639.70,-103614.78,5629.03];
-var REALES_ACUM=[63639.70,-39975.08,-34346.05];
+var REALES_MES=[63639.70,-103614.78,5629.03,50679.98];
+var REALES_ACUM=[63639.70,-39975.08,-34346.05,16333.94];
 var PESO_COLORS=['#2C3E54','#5BC8C0','#3d5268','#7fb3c8','#a8d8d3','#1e2d3d','#4a8fa8','#6baec4','#2e7d9e','#5a9eb8','#8fc4d4','#b5d9e4','#d4edf4','#3ea8a0'];
 
 var charts={};
@@ -408,9 +453,9 @@ function renderCmp(){
   var h='<div class="ph"><h2>Comparatiu YTD &mdash; Variacio entre Periodes</h2></div>';
   h+='<div class="cc" style="margin-bottom:16px;flex-direction:row;align-items:center;gap:16px">';
   h+='<label style="font-size:11px;font-weight:700;color:#2C3E54">Comparar</label>';
-  h+='<select class="csel" id="selA"><option value="0">YTD Gener 2026</option><option value="1">YTD Febrer 2026</option><option value="2" selected>YTD Marc 2026</option></select>';
+  h+='<select class="csel" id="selA"><option value="0">YTD Gener 2026</option><option value="1">YTD Febrer 2026</option><option value="2">YTD Marc 2026</option><option value="3" selected>YTD Abril 2026</option></select>';
   h+='<span class="cvs">VS</span>';
-  h+='<select class="csel" id="selB"><option value="0" selected>YTD Gener 2026</option><option value="1">YTD Febrer 2026</option><option value="2">YTD Marc 2026</option></select>';
+  h+='<select class="csel" id="selB"><option value="0" selected>YTD Gener 2026</option><option value="1">YTD Febrer 2026</option><option value="2">YTD Marc 2026</option><option value="3">YTD Abril 2026</option></select>';
   h+='<button onclick="updateCmp()" style="padding:5px 14px;background:#2C3E54;color:#fff;border:none;border-radius:4px;font-size:11px;font-weight:700;cursor:pointer">Actualitzar</button>';
   h+='</div><div id="cmpTbl"></div>';
   document.getElementById('CT').innerHTML=h;
@@ -418,7 +463,7 @@ function renderCmp(){
 }
 
 function ytdOf(idx){
-  var months=D.slice(0,idx+1);
+  var months=D.slice(0,idx+1).filter(function(d){return d.id<=3;});
   var res={lbl:'YTD '+D[idx].lbl,bdi:0,ri:0,bdg:0,rg:0,bdr:0,rr:0,ing:[],gto:[]};
   for(var i=0;i<months.length;i++){res.bdi+=months[i].bdi;res.ri+=months[i].ri;res.bdg+=months[i].bdg;res.rg+=months[i].rg;res.bdr+=months[i].bdr;res.rr+=months[i].rr;}
   res.ing=aggLines(months,'ing');
@@ -483,5 +528,7 @@ render(D[0]);
 </script>
 </body>
 </html>
+
+
 
 
