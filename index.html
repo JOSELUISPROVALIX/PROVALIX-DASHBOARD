@@ -78,6 +78,21 @@ html,body{height:100%;width:100%;font-family:'Segoe UI',system-ui,sans-serif;fon
 .ct2 td:first-child{text-align:left;font-weight:600;color:#3d5268}
 .ct2 tr.hdr td{background:#eef3f8;font-weight:800;color:var(--navy);font-size:11px}
 .ct2 tr.tr2 td{background:var(--navy);color:#fff;font-weight:800;font-size:12px}
+.bpres{width:100%;border-collapse:collapse;font-size:12px;background:#fff;border:1px solid var(--border);border-radius:6px;overflow:hidden}
+.bpres thead tr{background:var(--navy)}
+.bpres thead th{color:#fff;font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:9px 12px;text-align:right;white-space:nowrap}
+.bpres thead th:first-child{text-align:left;width:42%}
+.bpres tbody td{padding:5px 12px;text-align:right;border-bottom:1px solid var(--border);font-size:11px}
+.bpres tbody td:first-child{text-align:left}
+.bpres tr.bh1 td{background:#1e2d3d;color:#fff;font-weight:800;font-size:12px;padding:8px 12px;letter-spacing:.06em;text-transform:uppercase}
+.bpres tr.bh2 td{background:#eef3f8;color:var(--navy);font-weight:700;font-size:11px;padding:7px 12px}
+.bpres tr.bh3 td{background:#f5f8fb;color:#3d5268;font-weight:600;font-size:11px;padding:6px 12px 6px 20px}
+.bpres tr.bd td{color:var(--muted);padding:5px 12px 5px 30px;font-size:11px}
+.bpres tr.btot td{background:var(--navy);color:#fff;font-weight:800;font-size:12px;padding:10px 12px}
+.bpres td.cmt{font-size:10px;color:#94a3b8;font-style:italic;text-align:left!important;max-width:240px}
+.bpres td.pos{color:var(--green);font-weight:700}.bpres td.neg{color:var(--red);font-weight:700}
+.inv-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+
 </style>
 </head>
 <body style="display:flex;flex-direction:column;min-height:100vh">
@@ -263,7 +278,90 @@ var D=[
   {t:'det',c:'01.40.001 Amortitzacions',bd:-4039.93,r:-3808.12,cmt:'Baja Lleida 7 amort acum'}
  ],
  notas:['Resultat Inversions +29.770: Venda Lleida 7 1-2 (41.081 brut) + ajust PVX Residencial','Gestio Projecte 1T 17k: no iniciada. Coberta per Sotogrande P3 (previst Q2)','Comercial Andorra: pendent calcul variable 1T 2026 - estalvi 1.950 vs BD','FAD Legal Boutique 2.250 (Compliance 2n pagament) - no pressupostat','Resultat real Excel: 50.680 (incl. refacturacions +2.087 vs PPTX)'],
- bal:{a:8813737.46,pn:6713950.04,pnc:1500,pc:2098287.42,r:16333.94}}
+ bal:{a:8813737.46,pn:6713950.04,pnc:1500,pc:2098287.42,r:16333.94},
+ balDet:{
+  actiu:[
+   {cls:'bh1',lbl:'A) ACTIU NO CORRIENT',d25:7940942.36,cur:7362553.60,dif:-578388.76,cmt:''},
+   {cls:'bh2',lbl:'I. Immobilitzat intangible',d25:5668.26,cur:3682.14,dif:-1986.12,cmt:'Amortitzacio acumulada'},
+   {cls:'bh2',lbl:'II. Immobilitzat material',d25:187408.00,cur:180477.93,dif:-6930.07,cmt:'Amortitzacio acumulada'},
+   {cls:'bh2',lbl:'III. Inversions immobiliaries',d25:776878.26,cur:639395.69,dif:-137482.57,cmt:'Venda Lleida 7 1a-2a + PK'},
+   {cls:'bd',lbl:'  Terrenys',d25:195217.90,cur:187790.59,dif:-7427.31,cmt:'Venda Lleida 7'},
+   {cls:'bd',lbl:'  Construccions',d25:581660.36,cur:451605.10,dif:-130055.26,cmt:'Venda + Amor. Acum.'},
+   {cls:'bh2',lbl:'IV. Inv. emp. grup i associades LP',d25:5623529.61,cur:5191539.61,dif:-431990.00,cmt:'Veure detall Inversors'},
+   {cls:'bd',lbl:'  Instruments de patrimoni',d25:3123529.61,cur:2691539.61,dif:-431990.00,cmt:''},
+   {cls:'bd',lbl:'  Credits a empreses (URRU)',d25:2500000.00,cur:2500000.00,dif:0,cmt:''},
+   {cls:'bh2',lbl:'V. Inversions financeres LP',d25:1295816.35,cur:1295816.35,dif:0,cmt:'Mansewood + Opcions Andorra'},
+   {cls:'bh2',lbl:'VI. Actius per impost diferit',d25:51641.88,cur:51641.88,dif:0,cmt:'BINs'},
+   {cls:'bh1',lbl:'B) ACTIU CORRENT',d25:893764.62,cur:1451183.86,dif:557419.24,cmt:''},
+   {cls:'bh2',lbl:'III. Deutors comercials i altres',d25:6794.55,cur:48192.52,dif:41397.97,cmt:''},
+   {cls:'bd',lbl:'  Clients per prestacions servei',d25:131.56,cur:0,dif:-131.56,cmt:'Vizan 2010 cobrat'},
+   {cls:'bd',lbl:'  Clients EEGG (PVX Promos)',d25:772.34,cur:30742.39,dif:29970.05,cmt:'Deute PVX Promo 2 (Rincon)'},
+   {cls:'bd',lbl:'  HP deutora devolucio IS',d25:3146.40,cur:3146.40,dif:0,cmt:'Dev IS 2024 pendent'},
+   {cls:'bd',lbl:'  Altres credits AAPP',d25:2744.25,cur:14303.73,dif:11559.48,cmt:'IVA + Ret. int. prestecs'},
+   {cls:'bh2',lbl:'IV. Inv. emp. grup CP',d25:612154.39,cur:238871.10,dif:-373283.29,cmt:''},
+   {cls:'bd',lbl:'  Prestec CP PVX Residencial/Etruria',d25:397000.00,cur:17000.00,dif:-380000.00,cmt:'Dev. 16/02/26 + Etruria 7k'},
+   {cls:'bd',lbl:'  Interessos meritats (URRU+altres)',d25:215154.39,cur:221871.10,dif:6716.71,cmt:'Intrs. devengats'},
+   {cls:'bh2',lbl:'VII. Efectiu i equivalents liquids',d25:274815.68,cur:1164120.24,dif:889304.56,cmt:''},
+   {cls:'bd',lbl:'  Tresoreria (Sabadell)',d25:-5184.30,cur:82943.72,dif:88128.02,cmt:'Saldo 30/04/2026'},
+   {cls:'bd',lbl:'  FIIC (A Gobies)',d25:279999.98,cur:1081176.52,dif:801176.54,cmt:'Inversions liquiditat'},
+   {cls:'btot',lbl:'TOTAL ACTIU (A+B)',d25:8834706.98,cur:8813737.46,dif:-20969.52,cmt:''}
+  ],
+  passiu:[
+   {cls:'bh1',lbl:'A) PATRIMONI NET',d25:6697616.10,cur:6713950.04,dif:16333.94,cmt:''},
+   {cls:'bh2',lbl:'I. Capital',d25:2953000.00,cur:2953000.00,dif:0,cmt:''},
+   {cls:'bh2',lbl:'II. Prima d emissio',d25:2322653.40,cur:2322653.40,dif:0,cmt:''},
+   {cls:'bh2',lbl:'III. Reserves',d25:561948.49,cur:561948.49,dif:0,cmt:''},
+   {cls:'bd',lbl:'  Legal i estatutaries',d25:117536.61,cur:117536.61,dif:0,cmt:''},
+   {cls:'bd',lbl:'  Altres reserves',d25:444411.88,cur:444411.88,dif:0,cmt:''},
+   {cls:'bh2',lbl:'V. Resultats exercicis anteriors',d25:-24690.44,cur:432710.76,dif:457401.20,cmt:'Pte. repartiment 2025 (juny 26)'},
+   {cls:'bh2',lbl:'VI. Altres aportacions de socis',d25:427303.45,cur:427303.45,dif:0,cmt:''},
+   {cls:'bh2',lbl:'VII. Resultat de l exercici',d25:457401.20,cur:16333.94,dif:-441067.26,cmt:'YTD 2026 (4 mesos)'},
+   {cls:'bh1',lbl:'B) PASSIU NO CORRENT',d25:1545.00,cur:1500.00,dif:-45.00,cmt:'Fiances rebudes'},
+   {cls:'bh1',lbl:'C) PASSIU CORRENT',d25:2135545.88,cur:2098287.42,dif:-37258.46,cmt:''},
+   {cls:'bh2',lbl:'IV. Deutes amb EEGG CP',d25:2028683.70,cur:2037412.46,dif:8728.76,cmt:'Prestec URRU + interessos'},
+   {cls:'bd',lbl:'  Prestec CP URRU',d25:1770000.00,cur:1770000.00,dif:0,cmt:''},
+   {cls:'bd',lbl:'  Interessos prestec URRU',d25:33969.01,cur:42697.77,dif:8728.76,cmt:'Devengament 2026'},
+   {cls:'bd',lbl:'  Altres deutes efecte impositiu',d25:224714.69,cur:224714.69,dif:0,cmt:'Consolidacio'},
+   {cls:'bh2',lbl:'V. Creditors comercials i altres',d25:106862.18,cur:60874.96,dif:-45987.22,cmt:''},
+   {cls:'bd',lbl:'  Provedors',d25:0,cur:-1291.48,dif:-1291.48,cmt:''},
+   {cls:'bd',lbl:'  Provedors EEGG (PVX SUC)',d25:2887.50,cur:3757.06,dif:869.56,cmt:''},
+   {cls:'bd',lbl:'  Creditors diversos',d25:33038.10,cur:15181.82,dif:-17856.28,cmt:''},
+   {cls:'bd',lbl:'  Deutes AAPP (IVA/IRPF/SS)',d25:70936.58,cur:38227.56,dif:-32709.02,cmt:'IVA repercutit, IRPF, SS'},
+   {cls:'bd',lbl:'  Bestretes clients',d25:0,cur:5000.00,dif:5000.00,cmt:'Reserva Lleida 3 Entlo 1a'},
+   {cls:'btot',lbl:'TOTAL PATRIMONI NET I PASSIU',d25:8834706.98,cur:8813737.46,dif:-20969.52,cmt:''}
+  ]
+ },
+ invDet:{
+  parts:[
+   {lbl:'Valixsa Inv. Med.',d25:1011,cur:1011,dif:0,pct:''},
+   {lbl:'Valix 8 SL',d25:28,cur:28,dif:0,pct:''},
+   {lbl:'PVX Residencial SL',d25:374990,cur:0,dif:-374990,pct:'Liquidada'},
+   {lbl:'PVX Pirineos',d25:500000,cur:500000,dif:0,pct:''},
+   {lbl:'Provalix Cala Corb',d25:400000,cur:400000,dif:0,pct:''},
+   {lbl:'PVX Homes 1 (Vallpineda)',d25:123500,cur:66500,dif:-57000,pct:'Dev. aportacio'},
+   {lbl:'PVX Promocions 1 (Vilablareix)',d25:540000,cur:540000,dif:0,pct:'100%'},
+   {lbl:'PVX Promocions 2 (Rincon)',d25:800000,cur:800000,dif:0,pct:'100%'},
+   {lbl:'PVX Promocions 3 (Vilab. Centre)',d25:240000,cur:240000,dif:0,pct:'100%'},
+   {lbl:'PVX Promocions 4 (CalaCorbII)',d25:144000,cur:144000,dif:0,pct:'30%'},
+   {tot:true,lbl:'Total Inversions EEGG',d25:3123530,cur:2691540,dif:-431990,pct:''},
+   {lbl:'Credit a URRU',d25:2500000,cur:2500000,dif:0,pct:''},
+   {tot:true,lbl:'Inversions en EEGG LP',d25:5623530,cur:5191540,dif:-431990,pct:''},
+   {lbl:'Mansewood Finance (part.+inv.)',d25:114741,cur:114741,dif:0,pct:''},
+   {lbl:'Opcio compra MENTOR (Andorra)',d25:1045000,cur:1045000,dif:0,pct:''},
+   {lbl:'Opcio compra Permuta Cal Sec.',d25:104500,cur:104500,dif:0,pct:''},
+   {tot:true,lbl:'Inversions LP Altres',d25:1264241,cur:1264241,dif:0,pct:''}
+  ],
+  credits:[
+   {lbl:'Prestec CP PVX Inversio',d25:10000,cur:10000,dif:0,cmt:''},
+   {lbl:'Prestec CP PVX Residencial',d25:387000,cur:0,dif:-387000,cmt:'Devolucio 16/02/26'},
+   {lbl:'Prestec Etruria 7K',d25:0,cur:7000,dif:7000,cmt:'Pte. recepcio subvencio'},
+   {tot:true,lbl:'Total credits a EEGG CP',d25:397000,cur:17000,dif:-380000,cmt:''},
+   {lbl:'Prestec CP URRU',d25:-1770000,cur:-1770000,dif:0,cmt:''},
+   {lbl:'Interessos prestec URRU',d25:-33969,cur:-42698,dif:-8729,cmt:'Devengament 2026'},
+   {lbl:'Altres deutes ef. impositiu',d25:-224715,cur:-224715,dif:0,cmt:'Consolidacio'},
+   {tot:true,lbl:'Deutes amb EEGG CP (net)',d25:-2028684,cur:-2037413,dif:-8729,cmt:''}
+  ]
+ }}
 ,
 {id:4,lbl:'YTD Abril 2026',llbl:'2. SEGUIMENT BUDGET YTD ABRIL 2026',
  bdi:491756.43,ri:410244.64,bdg:393316.12,rg:426374.37,bde:98403.13,rde:18049.93,bdf:64411.52,rdf:-1715.99,bdr:162851.83,rr:16333.94,
@@ -372,10 +470,54 @@ function barOpts(ingH){
       y:{grid:{display:false},ticks:{font:{size:10},color:'#2C3E54'}}}};
 }
 
+function brow(cls,label,des25,cur,dif,cmt){
+  var dc=dif>0.4?'pos':dif<-0.4?'neg':'';
+  var ds=(dif>=0?'+':'\u2212')+fe(Math.abs(dif));
+  return '<tr class="'+cls+'"><td>'+label+'</td><td>'+(des25!==null?fe(des25):'')+'</td><td>'+(cur!==null?'<strong>'+fe(cur)+'</strong>':'')+'</td><td class="'+dc+'">'+(dif!==null?ds:'')+'</td><td class="cmt">'+(cmt||'')+'</td></tr>';
+}
+function buildBal(d){
+  var b=d.balDet;
+  if(!b)return '<div style="padding:16px;color:#64748b;font-size:12px">Dades de balanç no disponibles per a aquest mes.</div>';
+  var h='<div class="g2" style="margin-bottom:0">';
+  h+='<div>';
+  h+='<table class="bpres"><thead><tr><th>ACTIU</th><th>Des-25</th><th>'+d.lbl.replace('Gener','Gen').replace('Febrer','Feb').replace('Marc','Mar').replace('Abril','Abr')+'</th><th>&#916;</th><th>Comentari</th></tr></thead><tbody>';
+  for(var i=0;i<b.actiu.length;i++){var r=b.actiu[i];h+=brow(r.cls,r.lbl,r.d25,r.cur,r.dif,r.cmt);}
+  h+='</tbody></table></div>';
+  h+='<div>';
+  h+='<table class="bpres"><thead><tr><th>PASSIU I PATRIMONI NET</th><th>Des-25</th><th>'+d.lbl.replace('Gener','Gen').replace('Febrer','Feb').replace('Marc','Mar').replace('Abril','Abr')+'</th><th>&#916;</th><th>Comentari</th></tr></thead><tbody>';
+  for(var i=0;i<b.passiu.length;i++){var r=b.passiu[i];h+=brow(r.cls,r.lbl,r.d25,r.cur,r.dif,r.cmt);}
+  h+='</tbody></table></div>';
+  h+='</div>';
+  return h;
+}
+function buildInv(d){
+  var inv=d.invDet;
+  if(!inv)return '<div style="padding:16px;color:#64748b;font-size:12px">Dades d\'inversors no disponibles per a aquest mes.</div>';
+  var h='<div class="inv-grid">';
+  h+='<div class="cc"><div class="cct">Participacions en EEGG</div>';
+  h+='<table class="bpres"><thead><tr><th>Societat</th><th>Des-25</th><th>Actual</th><th>&#916;</th><th>%</th></tr></thead><tbody>';
+  for(var i=0;i<inv.parts.length;i++){
+    var r=inv.parts[i];var dc=r.dif>0.4?'pos':r.dif<-0.4?'neg':'';
+    h+='<tr class="'+(r.tot?'bh2':'bd')+'"><td>'+r.lbl+'</td><td>'+fe(r.d25)+'</td><td><strong>'+fe(r.cur)+'</strong></td><td class="'+dc+'">'+(r.dif>=0?'+':'\u2212')+fe(Math.abs(r.dif))+'</td><td class="cmt">'+(r.pct||'')+'</td></tr>';
+  }
+  h+='</tbody></table></div>';
+  h+='<div class="cc"><div class="cct">Credits i Deutes amb EEGG</div>';
+  h+='<table class="bpres"><thead><tr><th>Concepte</th><th>Des-25</th><th>Actual</th><th>&#916;</th><th>Comentari</th></tr></thead><tbody>';
+  for(var i=0;i<inv.credits.length;i++){
+    var r=inv.credits[i];var dc=r.dif>0.4?'pos':r.dif<-0.4?'neg':'';
+    h+='<tr class="'+(r.tot?'bh2':'bd')+'"><td>'+r.lbl+'</td><td>'+fe(r.d25)+'</td><td><strong>'+fe(r.cur)+'</strong></td><td class="'+dc+'">'+(r.dif>=0?'+':'\u2212')+fe(Math.abs(r.dif))+'</td><td class="cmt">'+(r.cmt||'')+'</td></tr>';
+  }
+  h+='</tbody></table></div>';
+  h+='</div>';
+  return h;
+}
+
 function render(d){
+  var ingDet=d.ing.filter(function(r){return r.t==='det';});
+  var gtoDetAll=d.gto.filter(function(r){return r.t==='det';});
+  var ingH=Math.max(400,ingDet.length*52+80);
+  var gtoH=Math.max(400,gtoDetAll.length*48+80);
   var di=d.ri-d.bdi,dg=d.rg-d.bdg;
-  var ingH=Math.max(300,d.ing.filter(function(r){return r.t==='det';}).length*36+60);
-  var gtoH=Math.max(320,d.gto.filter(function(r){return r.t==='det';}).length*36+60);
   var h='';
   h+='<div class="ph"><h2>'+d.llbl+'</h2></div>';
   h+='<div class="kpi-row">';
@@ -417,7 +559,11 @@ function render(d){
   h+='</tbody></table></div>';
   h+='<div class="cc"><div class="cct">Notes del periode</div>';
   h+='<div>';for(var i=0;i<d.notas.length;i++){h+='<div class="note-item">'+d.notas[i]+'</div>';}h+='</div></div></div>';
-  h+='<div class="sec">3. Analisi Balanc de Tancament</div>';
+  h+='<div class="sec">3. Balanç de Presentació</div>';
+  h+=buildBal(d);
+  h+='<div class="sec" style="margin-top:20px">4. Inversors &mdash; Detall Participacions i Deute EEGG</div>';
+  h+=buildInv(d);
+  h+='<div class="sec" style="margin-top:20px">Resum Estructura Financera</div>';
   h+='<div class="g3">';
   h+='<div class="cc"><div class="cct">Estructura financera</div>';
   h+='<div style="font-size:22px;font-weight:800;color:#2C3E54;margin-bottom:12px">'+fe(d.bal.a)+'</div>';
@@ -443,14 +589,15 @@ function drawCharts(d,ingH,gtoH){
   var opts=barOpts();
   charts.ing=new Chart(document.getElementById('cIng'),{type:'bar',data:{labels:ingDet.map(function(r){return r.c.replace(/^\d+\.\d+\.?\d*\s/,'');}),datasets:[{label:'Pressupost',data:ingDet.map(function(r){return Math.abs(r.bd||0);}),backgroundColor:BDA,borderColor:BD,borderWidth:1.5},{label:'Executat',data:ingDet.map(function(r){return Math.abs(r.r||0);}),backgroundColor:REALA,borderColor:REAL,borderWidth:1.5}]},options:opts});
   charts.gas=new Chart(document.getElementById('cGas'),{type:'bar',data:{labels:gtoDet.map(function(r){return r.c.replace(/^\d+\.\d+\.?\d*\s/,'');}),datasets:[{label:'Pressupost',data:gtoDet.map(function(r){return Math.abs(r.bd||0);}),backgroundColor:BDA,borderColor:BD,borderWidth:1.5},{label:'Executat',data:gtoDet.map(function(r){return Math.abs(r.r||0);}),backgroundColor:REALA,borderColor:REAL,borderWidth:1.5}]},options:opts});
-  var nullArr=[];for(var i=3;i<12;i++){nullArr.push(null);}
+  var nullArr=[];for(var i=d.id<=3?d.id+1:4;i<12;i++){nullArr.push(null);}
   charts.evo=new Chart(document.getElementById('cEvo'),{type:'line',data:{labels:BDM,datasets:[{label:'Acum. Pressupost',data:BDR_ACUM,borderColor:BD,backgroundColor:'rgba(44,62,84,0.08)',fill:true,tension:0.3,borderWidth:2.5,pointRadius:5,pointBackgroundColor:BD,pointBorderColor:'#fff',pointBorderWidth:2},{label:'Acum. Real',data:REALES_ACUM.concat(nullArr),borderColor:REAL,backgroundColor:'rgba(91,200,192,0.1)',fill:true,tension:0.3,borderWidth:3,pointRadius:8,pointBackgroundColor:REAL,pointBorderColor:'#fff',pointBorderWidth:2},{label:'Mensual BD',data:BDR_MES,borderColor:BD,borderDash:[5,4],tension:0.3,borderWidth:1.5,pointRadius:3,fill:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return c.dataset.label+': '+fe(c.raw);}}}},scales:{y:{grid:{color:'rgba(0,0,0,.04)'},ticks:{font:{size:10},callback:function(v){return '\u20AC'+Math.round(v/1000)+'k';},color:'#64748b'},title:{display:true,text:'Resultat Acumulat',font:{size:10,weight:'600'},color:'#64748b'}},x:{ticks:{font:{size:11,weight:'700'},color:'#2C3E54'}}}}});
-  var gVals=gtoDet.map(function(r){return Math.abs(r.r||0);});
-  var gTot=gVals.reduce(function(a,b){return a+b;},0);
+  var gRaw=gtoDet.map(function(r,i){return{lbl:r.c.replace(/^\d+\.\d+\.?\d*\s/,''),val:Math.abs(r.r||0),col:PESO_COLORS[i%PESO_COLORS.length]};});
+  gRaw.sort(function(a,b){return b.val-a.val;});
+  var gTot=gRaw.reduce(function(a,b){return a+b.val;},0);
   var legEl=document.getElementById('legPeso');
-  if(legEl){var lh='';for(var i=0;i<gtoDet.length;i++){var p=((gVals[i]/gTot)*100).toFixed(1);lh+='<div class="li"><div class="ld" style="background:'+PESO_COLORS[i%PESO_COLORS.length]+'"></div>'+gtoDet[i].c.replace(/^\d+\.\d+\.?\d*\s/,'')+'&nbsp;<strong>'+p+'%</strong></div>';}legEl.innerHTML=lh;}
-  charts.peso=new Chart(document.getElementById('cPeso'),{type:'doughnut',data:{labels:gtoDet.map(function(r){return r.c.replace(/^\d+\.\d+\.?\d*\s/,'');}),datasets:[{data:gVals,backgroundColor:PESO_COLORS,borderWidth:2,borderColor:'#fff',hoverOffset:8}]},options:{responsive:true,maintainAspectRatio:false,cutout:'55%',plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){var p=((c.raw/gTot)*100).toFixed(1);return c.label+': '+fe(c.raw)+' ('+p+')%';}}}}}});
-  var bVals=[5191540,1158920,772534,182570,568749];
+  if(legEl){var lh='';for(var i=0;i<gRaw.length;i++){var p=(gRaw[i].val/gTot*100).toFixed(1);lh+='<div class="li"><div class="ld" style="background:'+gRaw[i].col+'"></div>'+gRaw[i].lbl+'&nbsp;<strong>'+p+'%</strong></div>';}legEl.innerHTML=lh;}
+  charts.peso=new Chart(document.getElementById('cPeso'),{type:'doughnut',data:{labels:gRaw.map(function(r){return r.lbl;}),datasets:[{data:gRaw.map(function(r){return r.val;}),backgroundColor:gRaw.map(function(r){return r.col;}),borderWidth:2,borderColor:'#fff',hoverOffset:8}]},options:{responsive:true,maintainAspectRatio:false,cutout:'55%',plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){var p=(c.raw/gTot*100).toFixed(1);return c.label+': '+fe(c.raw)+' ('+p+'%)';}}}}}});
+  var bVals=d.bal.bVals||[5191540,1164120,639396,180478,568750];
   var bTot=bVals.reduce(function(a,b){return a+b;},0);
   charts.bal=new Chart(document.getElementById('cBal'),{type:'doughnut',data:{labels:['Inv. EEGG LP','Actiu corrent','Inv. Immobles','Immobilitzat','Altres'],datasets:[{data:bVals,backgroundColor:['#2C3E54','#5BC8C0','#3d5268','#7fb3c8','#b5d9e4'],borderWidth:2,borderColor:'#fff',hoverOffset:6}]},options:{responsive:true,maintainAspectRatio:false,cutout:'55%',plugins:{legend:{position:'bottom',labels:{font:{size:10},color:'#64748b',boxWidth:10,padding:8,generateLabels:function(chart){return chart.data.labels.map(function(l,i){return{text:l+' '+(chart.data.datasets[0].data[i]/bTot*100).toFixed(1)+'%',fillStyle:chart.data.datasets[0].backgroundColor[i],strokeStyle:'#fff',lineWidth:1,index:i};});}}}}}});
 }
